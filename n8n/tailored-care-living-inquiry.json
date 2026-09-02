@@ -3,6 +3,54 @@
   "nodes": [
     {
       "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "103fgQTP6_Edr-Mr2xlJGeremtl9Q82QinH4yx1moAzE",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Housing Interest List",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Received At": "={{ $json.receivedAt }}",
+            "Reference": "={{ $json.reference }}",
+            "Status": "={{ $json.waitingListStatus }}",
+            "Full Name": "={{ $json.fullName }}",
+            "Phone": "={{ $json.phone }}",
+            "Email": "={{ $json.email }}",
+            "Best Contact Time": "={{ $json.bestContactTime }}",
+            "Applying For": "={{ $json.applyingFor }}",
+            "Total Occupants": "={{ $json.occupants }}",
+            "Occupant Ages": "={{ $json.occupantAges }}",
+            "Move-In Timeframe": "={{ $json.moveIn }}",
+            "Current Housing Situation": "={{ $json.currentHousing }}",
+            "Housing Only": "={{ $json.housingOnly }}",
+            "Payment Source": "={{ $json.paymentSource }}",
+            "Additional Information": "={{ $json.additional }}",
+            "Consent": "={{ $json.consent }}"
+          }
+        },
+        "options": {}
+      },
+      "id": "03-waiting-list-sheet",
+      "name": "Add to Housing Interest List",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [480, 0],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Tz0DKwpIOZNXzLcC",
+          "name": "Tailored Care Google Everything OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
         "httpMethod": "POST",
         "path": "tailored-care-living-inquiry",
         "responseMode": "responseNode",
@@ -30,14 +78,14 @@
       "parameters": {
         "sendTo": "team@tailoredcarellc.com",
         "subject": "=New housing interest-list submission — {{ $json.reference }}",
-        "message": "=A new housing interest-list submission was received through the Tailored Care Living website.\n\nStatus: {{ $json.waitingListStatus }}\nReference: {{ $json.reference }}\nReceived: {{ $json.receivedAt }}\n\nCONTACT\nName: {{ $json.fullName }}\nPhone: {{ $json.phone }}\nEmail: {{ $json.email || 'Not provided' }}\nBest time to call: {{ $json.bestContactTime }}\n\nHOUSEHOLD AND HOUSING NEED\nSeeking housing for: {{ $json.applyingFor }}\nTotal proposed occupants: {{ $json.occupants }}\nMove-in timeframe: {{ $json.moveIn }}\nCurrent housing situation: {{ $json.currentHousing }}\n\nHOUSING SERVICES\nSeeking housing-only accommodations: {{ $json.housingOnly }}\nExpected payment source: {{ $json.paymentSource }}\n\nADDITIONAL INFORMATION\n{{ $json.additional || 'Not provided' }}\n\nThis submission requires individual human review. Do not approve or reject an applicant based only on an occupant's age or familial status.",
+        "message": "=A new housing interest-list submission was received through the Tailored Care Living website.\n\nStatus: {{ $json.waitingListStatus }}\nReference: {{ $json.reference }}\nReceived: {{ $json.receivedAt }}\n\nCONTACT\nName: {{ $json.fullName }}\nPhone: {{ $json.phone }}\nEmail: {{ $json.email || 'Not provided' }}\nBest time to call: {{ $json.bestContactTime }}\n\nHOUSEHOLD AND HOUSING NEED\nSeeking housing for: {{ $json.applyingFor }}\nTotal proposed occupants: {{ $json.occupants }}\nAges of proposed occupants: {{ $json.occupantAges }}\nMove-in timeframe: {{ $json.moveIn }}\nCurrent housing situation: {{ $json.currentHousing }}\n\nHOUSING SERVICES\nSeeking housing-only accommodations: {{ $json.housingOnly }}\nExpected payment source: {{ $json.paymentSource }}\n\nADDITIONAL INFORMATION\n{{ $json.additional || 'Not provided' }}\n\nThis submission requires individual human review. Do not approve or reject an applicant based only on an occupant's age or familial status.",
         "options": {}
       },
       "id": "03-owner-email",
       "name": "Notify Tailored Care Living",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [480, 0],
+      "position": [720, 0],
       "credentials": {
         "gmailOAuth2": {
           "id": "eVuIH5uDzE9skC4F",
@@ -74,7 +122,7 @@
       "name": "Applicant Provided Email?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [720, 0]
+      "position": [960, 0]
     },
     {
       "parameters": {
@@ -87,7 +135,7 @@
       "name": "Send Applicant Receipt",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [960, -100],
+      "position": [1200, -100],
       "credentials": {
         "gmailOAuth2": {
           "id": "eVuIH5uDzE9skC4F",
@@ -107,7 +155,7 @@
       "name": "Return Success",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
-      "position": [1200, 0]
+      "position": [1440, 0]
     }
   ],
   "connections": {
@@ -115,6 +163,9 @@
       "main": [[{"node": "Validate and Normalize", "type": "main", "index": 0}]]
     },
     "Validate and Normalize": {
+      "main": [[{"node": "Add to Housing Interest List", "type": "main", "index": 0}]]
+    },
+    "Add to Housing Interest List": {
       "main": [[{"node": "Notify Tailored Care Living", "type": "main", "index": 0}]]
     },
     "Notify Tailored Care Living": {
