@@ -7,7 +7,7 @@
         "path": "tailored-care-living-inquiry",
         "responseMode": "responseNode",
         "options": {
-          "allowedOrigins": "https://tammyamosley2018-hash.github.io"
+          "allowedOrigins": "https://tailoredcarellc.github.io"
         }
       },
       "id": "01-webhook",
