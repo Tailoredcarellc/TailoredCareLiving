@@ -30,7 +30,7 @@ if (menuButton && menu) {
     if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
     else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
   });
-  window.addEventListener('resize', () => { if (window.innerWidth > 820) setMenu(false); });
+  window.addEventListener('resize', () => { if (window.innerWidth > 900) setMenu(false); });
 }
 
 function updateHeader() { header?.classList.toggle('is-scrolled', window.scrollY > 24); }
