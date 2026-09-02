@@ -38,6 +38,19 @@ function validatePanel() {
     invalid.focus();
     return false;
   }
+  if (step === 2) {
+    const occupantCount = Number(document.querySelector('#occupants').value);
+    const agesField = document.querySelector('#occupantAges');
+    const ages = agesField.value.split(',').map(age => age.trim()).filter(Boolean);
+    const agesAreValid = ages.every(age => /^\d{1,3}$/.test(age) && Number(age) >= 0 && Number(age) <= 120);
+    if (!agesAreValid || ages.length !== occupantCount) {
+      agesField.setAttribute('aria-invalid', 'true');
+      errorSummary.textContent = `Please enter exactly ${occupantCount} valid occupant age${occupantCount === 1 ? '' : 's'}, separated by commas.`;
+      errorSummary.hidden = false;
+      agesField.focus();
+      return false;
+    }
+  }
   return true;
 }
 
@@ -49,7 +62,7 @@ function value(name) {
 function buildReview() {
   const sections = [
     ['Contact', [['Name', value('fullName')], ['Phone', value('phone')], ['Email', value('email')], ['Best time to call', value('bestContactTime')]]],
-    ['Housing Need', [['Seeking housing for', value('applyingFor')], ['Intended occupants', value('occupants')], ['Move-in timeframe', value('moveIn')], ['Current situation', value('currentHousing')]]],
+    ['Housing Need', [['Seeking housing for', value('applyingFor')], ['Total proposed occupants', value('occupants')], ['Ages of proposed occupants', value('occupantAges')], ['Move-in timeframe', value('moveIn')], ['Current situation', value('currentHousing')]]],
     ['Housing Services', [['Seeking housing-only accommodations', value('housingOnly')], ['Expected payment source', value('paymentSource')]]],
     ['Additional Information', [['Housing information', value('additional')]]]
   ];
@@ -72,7 +85,10 @@ form.addEventListener('submit', async (event) => {
   try {
     const endpoint = window.TCL_CONFIG?.applicationEndpoint;
     if (!endpoint || !endpoint.startsWith('https://')) throw new Error('Inquiry delivery has not been configured yet.');
-    const response = await fetch(endpoint, { method: 'POST', headers: { 'Accept': 'application/json' }, body: new FormData(form) });
+    const payload = new FormData(form);
+    const existingAdditional = String(payload.get('additional') || '').trim();
+    payload.set('additional', `Proposed occupant ages: ${payload.get('occupantAges')}${existingAdditional ? `\n\n${existingAdditional}` : ''}`);
+    const response = await fetch(endpoint, { method: 'POST', headers: { 'Accept': 'application/json' }, body: payload });
     const result = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(result.message || 'Unable to submit the inquiry.');
     form.hidden = true;
@@ -84,6 +100,6 @@ form.addEventListener('submit', async (event) => {
     errorSummary.textContent = `${error.message} Please try again later or contact Tailored Care Living directly.`;
     errorSummary.hidden = false;
     submit.disabled = false;
-    submit.textContent = 'Submit Inquiry';
+    submit.textContent = 'Join Interest List';
   }
 });
