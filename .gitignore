@@ -1,2 +1,4 @@
 .DS_Store
 Tailored Care Living Website Build Directive.pdf
+.env
+.env.local
