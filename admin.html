@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Applicant Review | Tailored Care Living</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260902f">
+  <link rel="stylesheet" href="assets/css/admin.css?v=20260911a">
+</head>
+<body class="admin-page">
+  <header class="admin-header">
+    <a class="admin-brand" href="index.html"><img src="assets/images/tailored-care-living-logo-display.jpg" alt="Tailored Care Living LLC"></a>
+    <button class="text-link" type="button" id="log-out" hidden>Log out</button>
+  </header>
+
+  <main class="admin-main">
+
+    <section id="gate-screen">
+      <div class="admin-card gate-card">
+        <p class="eyebrow">Staff only</p>
+        <h1>Applicant Review</h1>
+        <p class="step-intro">Enter the admin key to review pending housing applicants.</p>
+        <form id="gate-form" novalidate>
+          <div class="field full">
+            <label for="admin-key">Admin key</label>
+            <input id="admin-key" type="password" autocomplete="off" required>
+          </div>
+          <div class="error-summary" id="gate-error" role="alert" hidden></div>
+          <button class="button" type="submit">Enter</button>
+        </form>
+      </div>
+    </section>
+
+    <section id="list-screen" hidden>
+      <div class="admin-toolbar">
+        <h1>Pending Applicants</h1>
+        <button class="text-link" type="button" id="refresh-list">Refresh</button>
+      </div>
+      <div class="error-summary" id="list-error" role="alert" hidden></div>
+      <p id="empty-state" hidden>No applicants are waiting on a decision right now.</p>
+      <div id="applicant-list"></div>
+    </section>
+
+  </main>
+
+  <script src="assets/js/config.js?v=20260901a"></script>
+  <script src="assets/js/admin.js?v=20260911a"></script>
+</body>
+</html>

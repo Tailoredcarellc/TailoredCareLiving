@@ -1,0 +1,283 @@
+{
+  "name": "Tailored Care Living — Admin Portal",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "tailored-care-living-admin-pending",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "https://tailoredcarelivingllc.com,https://www.tailoredcarelivingllc.com,https://tailoredcarellc.github.io"
+        }
+      },
+      "id": "a1-webhook-list",
+      "name": "Pending List Requested",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "c6rO6sZ6l4EDZLFD",
+          "name": "Tailored Care Living Admin Portal Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "103fgQTP6_Edr-Mr2xlJGeremtl9Q82QinH4yx1moAzE",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Housing Interest List",
+          "mode": "name"
+        },
+        "options": {
+          "returnAllMatches": "returnAllMatches"
+        }
+      },
+      "id": "a2-read-sheet",
+      "name": "Read Sheet (List)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        240,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Tz0DKwpIOZNXzLcC",
+          "name": "Tailored Care Google Everything OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Show only applicants who have not yet been marked Accepted or Declined.\nconst rows = $input.all();\nconst pending = rows.filter((item) => !String(item.json['Acceptance Status'] || '').trim());\n\nreturn pending.map((item) => ({\n  json: {\n    row_number: item.json.row_number,\n    reference: item.json['Reference'],\n    receivedAt: item.json['Received At'],\n    fullName: item.json['Full Name'],\n    phone: item.json['Phone'],\n    email: item.json['Email'],\n    bestContactTime: item.json['Best Contact Time'],\n    applyingFor: item.json['Applying For'],\n    occupants: item.json['Total Occupants'],\n    occupantAges: item.json['Occupant Ages'],\n    moveIn: item.json['Move-In Timeframe'],\n    currentHousing: item.json['Current Housing Situation'],\n    housingOnly: item.json['Housing Only'],\n    paymentSource: item.json['Payment Source'],\n    additional: item.json['Additional Information']\n  }\n}));"
+      },
+      "id": "a3-filter-pending",
+      "name": "Filter Pending",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, applicants: $input.all().map(i => i.json) } }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "a4-respond-list",
+      "name": "Return Pending List",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        720,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tailored-care-living-admin-decide",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "https://tailoredcarelivingllc.com,https://www.tailoredcarelivingllc.com,https://tailoredcarellc.github.io"
+        }
+      },
+      "id": "b1-webhook-decide",
+      "name": "Decision Submitted",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "c6rO6sZ6l4EDZLFD",
+          "name": "Tailored Care Living Admin Portal Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Validate the admin's decision before writing it to the sheet.\nconst trigger = $('Decision Submitted').first().json;\nconst body = trigger.body || {};\nconst rowNumber = Number(body.row_number);\nconst decision = String(body.decision || '').trim();\n\nif (!rowNumber || !['Accepted', 'Declined'].includes(decision)) {\n  throw new Error('A valid row_number and decision (Accepted or Declined) are required.');\n}\n\nreturn [{ json: { row_number: rowNumber, decision } }];"
+      },
+      "id": "b2-validate-decision",
+      "name": "Validate Decision",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "103fgQTP6_Edr-Mr2xlJGeremtl9Q82QinH4yx1moAzE",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Housing Interest List",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "row_number"
+          ],
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "Acceptance Status": "={{ $json.decision }}"
+          },
+          "schema": [
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "Acceptance Status",
+              "displayName": "Acceptance Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "b3-write-decision",
+      "name": "Write Decision",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        480,
+        300
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Tz0DKwpIOZNXzLcC",
+          "name": "Tailored Care Google Everything OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true } }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "b4-respond-decide",
+      "name": "Return Decision Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        720,
+        300
+      ]
+    }
+  ],
+  "connections": {
+    "Pending List Requested": {
+      "main": [
+        [
+          {
+            "node": "Read Sheet (List)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Sheet (List)": {
+      "main": [
+        [
+          {
+            "node": "Filter Pending",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Pending": {
+      "main": [
+        [
+          {
+            "node": "Return Pending List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decision Submitted": {
+      "main": [
+        [
+          {
+            "node": "Validate Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Decision": {
+      "main": [
+        [
+          {
+            "node": "Write Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Decision": {
+      "main": [
+        [
+          {
+            "node": "Return Decision Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

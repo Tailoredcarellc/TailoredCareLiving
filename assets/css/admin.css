@@ -1,0 +1,28 @@
+.admin-page{min-height:100vh;background:var(--paper);color:var(--ink)}
+.admin-header{display:flex;align-items:center;justify-content:space-between;padding:1.5rem clamp(1.25rem,5vw,3rem);border-bottom:1px solid var(--line)}
+.admin-brand img{width:54px;height:54px;object-fit:cover}
+.admin-main{max-width:900px;margin:0 auto;padding:3rem clamp(1.25rem,5vw,3rem) 6rem}
+.gate-card{max-width:420px;margin:6rem auto 0;padding:2.5rem;border:1px solid var(--line);background:#fff}
+.gate-card h1{margin:.5rem 0 1rem;font-family:var(--serif);font-size:2.6rem;font-weight:400}
+.gate-card .step-intro{color:var(--muted);margin-bottom:2rem}
+#gate-form .field{display:grid;gap:.55rem;margin-bottom:1.75rem}
+#gate-form label{font-size:.82rem;font-weight:600}
+#gate-form input{width:100%;min-height:3rem;padding:.7rem 0;border:0;border-bottom:1px solid #a9a096;background:transparent;color:var(--ink)}
+#gate-form input:focus{outline:0;border-color:var(--burgundy)}
+.admin-toolbar{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;margin-bottom:2rem}
+.admin-toolbar h1{margin:0;font-family:var(--serif);font-size:2.4rem;font-weight:400}
+#empty-state{color:var(--muted);padding:2rem 0}
+.applicant-card{border:1px solid var(--line);background:#fff;padding:1.75rem;margin-bottom:1.5rem}
+.applicant-card h2{margin:0 0 .25rem;font-family:var(--serif);font-size:1.75rem;font-weight:400}
+.applicant-card .meta{color:var(--muted);font-size:.82rem;margin-bottom:1.25rem}
+.applicant-grid{display:grid;grid-template-columns:1fr 1fr;gap:.6rem 1.5rem;margin-bottom:1.5rem;font-size:.88rem}
+.applicant-grid .row{padding:.4rem 0;border-bottom:1px solid var(--line)}
+.applicant-grid b{display:block;color:var(--muted);font-weight:500;font-size:.72rem;letter-spacing:.03em;text-transform:uppercase;margin-bottom:.2rem}
+.applicant-actions{display:flex;gap:1rem}
+.decide-button{min-height:2.9rem;padding:0 1.5rem;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer;font-size:.85rem;font-weight:600}
+.decide-button.accept{border-color:var(--burgundy);background:var(--burgundy);color:#fff}
+.decide-button.accept:hover{background:#861d3a}
+.decide-button.decline:hover{border-color:var(--ink)}
+.decide-button:disabled{opacity:.5;cursor:default}
+.error-summary{margin:0 0 1.5rem;padding:1rem 1.2rem;border-left:3px solid #a21e34;background:#fae9ec;color:#771328;font-size:.88rem}
+@media(max-width:600px){.applicant-grid{grid-template-columns:1fr}.applicant-actions{flex-direction:column}.decide-button{width:100%}}
