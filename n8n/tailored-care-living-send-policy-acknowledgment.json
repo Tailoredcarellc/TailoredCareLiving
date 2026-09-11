@@ -1,0 +1,228 @@
+{
+  "name": "Tailored Care Living — Send Policy Acknowledgment",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "id": "01-schedule",
+      "name": "Every 15 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "103fgQTP6_Edr-Mr2xlJGeremtl9Q82QinH4yx1moAzE",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Housing Interest List",
+          "mode": "name"
+        },
+        "options": {
+          "returnAllMatches": "returnAllMatches"
+        }
+      },
+      "id": "02-read-sheet",
+      "name": "Read Housing Interest List",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        240,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Tz0DKwpIOZNXzLcC",
+          "name": "Tailored Care Google Everything OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Keep only rows the business has marked Accepted that have not been sent a\n// signing link yet. Generates a random per-resident token used to build the\n// unique sign.html link and to look the row back up when they sign.\nconst rows = $input.all();\nconst qualifying = rows.filter((item) => {\n  const acceptance = String(item.json['Acceptance Status'] || '').trim().toLowerCase();\n  const signStatus = String(item.json['P&P Sign Status'] || '').trim();\n  const email = String(item.json['Email'] || '').trim();\n  return acceptance === 'accepted' && !signStatus && email;\n});\n\nfunction makeToken() {\n  try {\n    return require('crypto').randomUUID().replace(/-/g, '');\n  } catch (error) {\n    return Array.from({ length: 32 }, () => Math.floor(Math.random() * 16).toString(16)).join('');\n  }\n}\n\nreturn qualifying.map((item) => ({\n  json: {\n    ...item.json,\n    signToken: makeToken(),\n    sentAt: new Date().toISOString()\n  }\n}));"
+      },
+      "id": "03-filter-accepted",
+      "name": "Find Accepted, Unsent",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "103fgQTP6_Edr-Mr2xlJGeremtl9Q82QinH4yx1moAzE",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Housing Interest List",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "row_number"
+          ],
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "P&P Sign Status": "Sent",
+            "P&P Sign Token": "={{ $json.signToken }}",
+            "P&P Sent At": "={{ $json.sentAt }}"
+          },
+          "schema": [
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "P&P Sign Status",
+              "displayName": "P&P Sign Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "P&P Sign Token",
+              "displayName": "P&P Sign Token",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "P&P Sent At",
+              "displayName": "P&P Sent At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "04-mark-sent",
+      "name": "Mark Sign Status = Sent",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        720,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Tz0DKwpIOZNXzLcC",
+          "name": "Tailored Care Google Everything OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.Email }}",
+        "subject": "Please sign your Tailored Care Living Policy & Procedure acknowledgment",
+        "message": "=Hello {{ $json['Full Name'] }},\n\nWelcome to Tailored Care Living. Before move-in, please review and sign the acknowledgment for the Policy & Procedure Manual using the private link below. This link is unique to you — please do not forward it.\n\nhttps://tailoredcarelivingllc.com/sign.html?token={{ $json.signToken }}\n\nIf you have any trouble opening the link, reply to this email and the team will assist you.\n\nTailored Care Living",
+        "options": {}
+      },
+      "id": "05-send-link",
+      "name": "Email Sign Link",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        960,
+        0
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "eVuIH5uDzE9skC4F",
+          "name": "Gmail account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Every 15 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Read Housing Interest List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Housing Interest List": {
+      "main": [
+        [
+          {
+            "node": "Find Accepted, Unsent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Accepted, Unsent": {
+      "main": [
+        [
+          {
+            "node": "Mark Sign Status = Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Sign Status = Sent": {
+      "main": [
+        [
+          {
+            "node": "Email Sign Link",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

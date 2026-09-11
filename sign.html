@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Policy &amp; Procedure Acknowledgment | Tailored Care Living</title>
+  <meta name="robots" content="noindex,nofollow">
+  <link rel="stylesheet" href="assets/css/styles.css?v=20260902f">
+  <link rel="stylesheet" href="assets/css/application.css?v=20260901a">
+  <link rel="stylesheet" href="assets/css/sign.css?v=20260910a">
+</head>
+<body class="application-page">
+  <a class="skip-link" href="#main">Skip to acknowledgment</a>
+  <header class="site-header">
+    <nav class="nav wrap" aria-label="Primary navigation">
+      <a class="brand" href="index.html"><img src="assets/images/tailored-care-living-logo-display.jpg" alt="Tailored Care Living LLC"></a>
+      <a class="text-link" href="index.html">← Return to website</a>
+    </nav>
+  </header>
+  <main class="application-shell" id="main">
+    <aside class="application-aside">
+      <p class="eyebrow" style="color:#e7bd75">Resident acknowledgment</p>
+      <h1>Sign your Policy &amp; Procedure acknowledgment.</h1>
+      <p>This confirms you have received, read, and understand the Tailored Care Living Policy &amp; Procedure Manual. This link is unique to you — please do not forward it.</p>
+    </aside>
+    <div class="form-area">
+      <div class="form-wrap">
+
+        <div class="sign-state" id="loading-state">
+          <p class="step-kicker">Please wait</p>
+          <h2>Loading your acknowledgment…</h2>
+        </div>
+
+        <div class="sign-state error-summary" id="error-state" role="alert" hidden></div>
+
+        <form class="sign-state" id="sign-form" novalidate hidden>
+          <p class="step-kicker">Policy &amp; Procedure acknowledgment</p>
+          <h2>Review and sign.</h2>
+          <p class="step-intro">You are signing as <strong id="signer-display-name"></strong>. If this is not you, please contact Tailored Care Living before continuing.</p>
+
+          <p class="field full"><a class="button" id="manual-link" href="#" target="_blank" rel="noopener">Open the Policy &amp; Procedure Manual ↗</a></p>
+
+          <div class="field full">
+            <label for="typedName">Type your full legal name to sign *</label>
+            <input id="typedName" name="typedName" autocomplete="name" maxlength="120" required>
+            <span class="hint">Typing your name here and submitting this form acts as your electronic signature.</span>
+          </div>
+
+          <label class="consent">
+            <input type="checkbox" name="acknowledge" id="acknowledge" required>
+            <span>I have read, understand, and agree to comply with the Tailored Care Living Policy &amp; Procedure Manual<span id="version-text"></span>. I understand this manual may be updated, and that I am responsible for reviewing any updated version provided to me. *</span>
+          </label>
+
+          <div class="error-summary" id="form-error" role="alert" hidden></div>
+          <div class="form-actions"><span></span><button class="button" type="submit" id="submit-sign">Sign &amp; Submit</button></div>
+        </form>
+
+        <section class="sign-state success" id="success-state" tabindex="-1" hidden>
+          <div class="success-mark">✓</div>
+          <h2 class="section-title">Thank you. Your acknowledgment is on file.</h2>
+          <p>A signed copy has been recorded. Tailored Care Living will follow up with any remaining move-in steps.</p>
+          <a class="button" href="index.html">Return to Home</a>
+        </section>
+
+      </div>
+    </div>
+  </main>
+  <script src="assets/js/config.js?v=20260901a"></script>
+  <script src="assets/js/sign.js?v=20260910a"></script>
+</body>
+</html>

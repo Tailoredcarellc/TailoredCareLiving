@@ -1,0 +1,509 @@
+{
+  "name": "Tailored Care Living — Policy Acknowledgment Signing",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "tailored-care-living-policy-sign-session",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "https://tailoredcarelivingllc.com,https://www.tailoredcarelivingllc.com,https://tailoredcarellc.github.io"
+        }
+      },
+      "id": "a1-webhook-session",
+      "name": "Session Requested",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "103fgQTP6_Edr-Mr2xlJGeremtl9Q82QinH4yx1moAzE",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Housing Interest List",
+          "mode": "name"
+        },
+        "options": {
+          "returnAllMatches": "returnAllMatches"
+        }
+      },
+      "id": "a2-read-sheet",
+      "name": "Read Sheet (Session)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        240,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Tz0DKwpIOZNXzLcC",
+          "name": "Tailored Care Google Everything OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Shared lookup: find the sheet row matching the token from the querystring (GET)\n// or JSON body (POST), and confirm it is a live, unsigned, accepted acknowledgment.\nconst trigger = $('Session Requested').first().json;\nconst token = String(trigger.query && trigger.query.token || '').trim();\nconst rows = $input.all();\n\nconst CONFIG = {\n  docVersion: 'Version 1.0 (Effective July 1, 2026)',\n  docUrl: 'https://docs.google.com/document/d/1zWTDSsVz12291QddViQqPqIw2ul4R37z/edit?usp=sharing'\n};\n\nif (!token) {\n  return [{ json: { ok: false, message: 'This acknowledgment link is missing information.' } }];\n}\n\nconst match = rows.find((item) => String(item.json['P&P Sign Token'] || '').trim() === token);\nif (!match) {\n  return [{ json: { ok: false, message: 'This acknowledgment link is invalid or has expired.' } }];\n}\n\nconst acceptance = String(match.json['Acceptance Status'] || '').trim().toLowerCase();\nconst signStatus = String(match.json['P&P Sign Status'] || '').trim().toLowerCase();\nif (acceptance !== 'accepted') {\n  return [{ json: { ok: false, message: 'This acknowledgment link is invalid or has expired.' } }];\n}\nif (signStatus === 'signed') {\n  return [{ json: { ok: false, message: 'This acknowledgment has already been signed.' } }];\n}\n\nreturn [{\n  json: {\n    ok: true,\n    row_number: match.json.row_number,\n    fullName: match.json['Full Name'],\n    email: match.json['Email'],\n    docVersion: CONFIG.docVersion,\n    docUrl: CONFIG.docUrl\n  }\n}];"
+      },
+      "id": "a3-validate-session",
+      "name": "Validate Token (Session)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "a4-respond-session",
+      "name": "Return Session",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        720,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tailored-care-living-policy-sign-submit",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "https://tailoredcarelivingllc.com,https://www.tailoredcarelivingllc.com,https://tailoredcarellc.github.io"
+        }
+      },
+      "id": "b1-webhook-submit",
+      "name": "Signature Submitted",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "read",
+        "documentId": {
+          "__rl": true,
+          "value": "103fgQTP6_Edr-Mr2xlJGeremtl9Q82QinH4yx1moAzE",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Housing Interest List",
+          "mode": "name"
+        },
+        "options": {
+          "returnAllMatches": "returnAllMatches"
+        }
+      },
+      "id": "b2-read-sheet",
+      "name": "Read Sheet (Submit)",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        240,
+        300
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Tz0DKwpIOZNXzLcC",
+          "name": "Tailored Care Google Everything OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Shared lookup: find the sheet row matching the token from the querystring (GET)\n// or JSON body (POST), and confirm it is a live, unsigned, accepted acknowledgment.\nconst trigger = $('Signature Submitted').first().json;\nconst token = String(trigger.body && trigger.body.token || '').trim();\nconst rows = $input.all();\n\nconst CONFIG = {\n  docVersion: 'Version 1.0 (Effective July 1, 2026)',\n  docUrl: 'https://docs.google.com/document/d/1zWTDSsVz12291QddViQqPqIw2ul4R37z/edit?usp=sharing'\n};\n\nif (!token) {\n  return [{ json: { ok: false, message: 'This acknowledgment link is missing information.' } }];\n}\n\nconst match = rows.find((item) => String(item.json['P&P Sign Token'] || '').trim() === token);\nif (!match) {\n  return [{ json: { ok: false, message: 'This acknowledgment link is invalid or has expired.' } }];\n}\n\nconst acceptance = String(match.json['Acceptance Status'] || '').trim().toLowerCase();\nconst signStatus = String(match.json['P&P Sign Status'] || '').trim().toLowerCase();\nif (acceptance !== 'accepted') {\n  return [{ json: { ok: false, message: 'This acknowledgment link is invalid or has expired.' } }];\n}\nif (signStatus === 'signed') {\n  return [{ json: { ok: false, message: 'This acknowledgment has already been signed.' } }];\n}\n\nreturn [{\n  json: {\n    ok: true,\n    row_number: match.json.row_number,\n    fullName: match.json['Full Name'],\n    email: match.json['Email'],\n    docVersion: CONFIG.docVersion,\n    docUrl: CONFIG.docUrl\n  }\n}];"
+      },
+      "id": "b3-validate-submit",
+      "name": "Validate Token (Submit)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        480,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "is-valid",
+              "leftValue": "={{ $json.ok }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "true",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "b4-if-valid",
+      "name": "Token Still Valid?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        720,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Merge the validated sheet row with the submitted name/acknowledgment and\n// the requester's IP address, captured server-side (never trust a client-sent IP).\nconst session = $('Validate Token (Submit)').first().json;\nconst trigger = $('Signature Submitted').first().json;\nconst body = trigger.body || {};\nconst headers = trigger.headers || {};\n\nconst typedName = String(body.typedName || '').trim().slice(0, 120);\nconst acknowledge = body.acknowledge === true;\nif (!typedName || !acknowledge) {\n  throw new Error('Please type your full legal name and check the acknowledgment box.');\n}\n\nconst ip = String(headers['x-forwarded-for'] || headers['x-real-ip'] || '').split(',')[0].trim() || 'Unknown';\n\nreturn [{\n  json: {\n    ...session,\n    signerName: typedName,\n    signerIp: ip,\n    signedAt: new Date().toISOString()\n  }\n}];"
+      },
+      "id": "b5-build-record",
+      "name": "Build Signature Record",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        960,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "103fgQTP6_Edr-Mr2xlJGeremtl9Q82QinH4yx1moAzE",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Housing Interest List",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "matchingColumns": [
+            "row_number"
+          ],
+          "value": {
+            "row_number": "={{ $json.row_number }}",
+            "P&P Sign Status": "Signed",
+            "P&P Signed At": "={{ $json.signedAt }}",
+            "P&P Signer Name": "={{ $json.signerName }}",
+            "P&P Signer IP": "={{ $json.signerIp }}",
+            "P&P Doc Version": "={{ $json.docVersion }}"
+          },
+          "schema": [
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": true,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": false
+            },
+            {
+              "id": "P&P Sign Status",
+              "displayName": "P&P Sign Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "P&P Signed At",
+              "displayName": "P&P Signed At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "P&P Signer Name",
+              "displayName": "P&P Signer Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "P&P Signer IP",
+              "displayName": "P&P Signer IP",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "P&P Doc Version",
+              "displayName": "P&P Doc Version",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "id": "b6-mark-signed",
+      "name": "Mark Sign Status = Signed",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1200,
+        200
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Tz0DKwpIOZNXzLcC",
+          "name": "Tailored Care Google Everything OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "team@tailoredcarellc.com",
+        "subject": "=Policy & Procedure acknowledgment signed — {{ $json.signerName }}",
+        "message": "=A resident has electronically signed the Policy & Procedure acknowledgment.\n\nName on file: {{ $json.fullName }}\nTyped signature: {{ $json.signerName }}\nSigned at: {{ $json.signedAt }}\nIP address: {{ $json.signerIp }}\nDocument version: {{ $json.docVersion }}\n\nThis record is also saved in the Housing Interest List sheet.",
+        "options": {}
+      },
+      "id": "b7-notify-business",
+      "name": "Notify Tailored Care Living",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1440,
+        100
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "eVuIH5uDzE9skC4F",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $json.email }}",
+        "subject": "Your Tailored Care Living acknowledgment is on file",
+        "message": "=Hello {{ $json.fullName }},\n\nThis confirms your electronic signature on the Tailored Care Living Policy & Procedure Manual ({{ $json.docVersion }}) was received on {{ $json.signedAt }}.\n\nSigned by: {{ $json.signerName }}\n\nPlease keep this email for your records. Tailored Care Living will follow up with any remaining move-in steps.\n\nTailored Care Living",
+        "options": {}
+      },
+      "id": "b8-notify-resident",
+      "name": "Send Resident Receipt",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        1440,
+        300
+      ],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "eVuIH5uDzE9skC4F",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true } }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "b9-respond-success",
+      "name": "Return Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1680,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "b10-respond-invalid",
+      "name": "Return Invalid",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        960,
+        420
+      ]
+    }
+  ],
+  "connections": {
+    "Session Requested": {
+      "main": [
+        [
+          {
+            "node": "Read Sheet (Session)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Sheet (Session)": {
+      "main": [
+        [
+          {
+            "node": "Validate Token (Session)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Token (Session)": {
+      "main": [
+        [
+          {
+            "node": "Return Session",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Signature Submitted": {
+      "main": [
+        [
+          {
+            "node": "Read Sheet (Submit)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Sheet (Submit)": {
+      "main": [
+        [
+          {
+            "node": "Validate Token (Submit)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate Token (Submit)": {
+      "main": [
+        [
+          {
+            "node": "Token Still Valid?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Token Still Valid?": {
+      "main": [
+        [
+          {
+            "node": "Build Signature Record",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Return Invalid",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build Signature Record": {
+      "main": [
+        [
+          {
+            "node": "Mark Sign Status = Signed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mark Sign Status = Signed": {
+      "main": [
+        [
+          {
+            "node": "Notify Tailored Care Living",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Resident Receipt",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify Tailored Care Living": {
+      "main": [
+        [
+          {
+            "node": "Return Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

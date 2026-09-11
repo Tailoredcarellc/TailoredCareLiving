@@ -33,7 +33,171 @@
             "Payment Source": "={{ $json.paymentSource }}",
             "Additional Information": "={{ $json.additional }}",
             "Consent": "={{ $json.consent }}"
-          }
+          },
+          "schema": [
+            {
+              "id": "Received At",
+              "displayName": "Received At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Reference",
+              "displayName": "Reference",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Full Name",
+              "displayName": "Full Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Best Contact Time",
+              "displayName": "Best Contact Time",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Applying For",
+              "displayName": "Applying For",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Total Occupants",
+              "displayName": "Total Occupants",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Occupant Ages",
+              "displayName": "Occupant Ages",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Move-In Timeframe",
+              "displayName": "Move-In Timeframe",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Current Housing Situation",
+              "displayName": "Current Housing Situation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Housing Only",
+              "displayName": "Housing Only",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Payment Source",
+              "displayName": "Payment Source",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Additional Information",
+              "displayName": "Additional Information",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Consent",
+              "displayName": "Consent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
         },
         "options": {}
       },
@@ -41,7 +205,10 @@
       "name": "Add to Housing Interest List",
       "type": "n8n-nodes-base.googleSheets",
       "typeVersion": 4.7,
-      "position": [480, 0],
+      "position": [
+        480,
+        0
+      ],
       "credentials": {
         "googleSheetsOAuth2Api": {
           "id": "Tz0DKwpIOZNXzLcC",
@@ -62,7 +229,10 @@
       "name": "Housing Interest Submitted",
       "type": "n8n-nodes-base.webhook",
       "typeVersion": 2,
-      "position": [0, 0]
+      "position": [
+        0,
+        0
+      ]
     },
     {
       "parameters": {
@@ -72,7 +242,10 @@
       "name": "Validate and Normalize",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [240, 0]
+      "position": [
+        240,
+        0
+      ]
     },
     {
       "parameters": {
@@ -85,7 +258,10 @@
       "name": "Notify Tailored Care Living",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [720, 0],
+      "position": [
+        720,
+        0
+      ],
       "credentials": {
         "gmailOAuth2": {
           "id": "eVuIH5uDzE9skC4F",
@@ -122,7 +298,10 @@
       "name": "Applicant Provided Email?",
       "type": "n8n-nodes-base.if",
       "typeVersion": 2.2,
-      "position": [960, 0]
+      "position": [
+        960,
+        0
+      ]
     },
     {
       "parameters": {
@@ -135,7 +314,10 @@
       "name": "Send Applicant Receipt",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [1200, -100],
+      "position": [
+        1200,
+        -100
+      ],
       "credentials": {
         "gmailOAuth2": {
           "id": "eVuIH5uDzE9skC4F",
@@ -155,30 +337,85 @@
       "name": "Return Success",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.4,
-      "position": [1440, 0]
+      "position": [
+        1440,
+        0
+      ]
     }
   ],
   "connections": {
     "Housing Interest Submitted": {
-      "main": [[{"node": "Validate and Normalize", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Validate and Normalize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Validate and Normalize": {
-      "main": [[{"node": "Add to Housing Interest List", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Add to Housing Interest List",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Add to Housing Interest List": {
-      "main": [[{"node": "Notify Tailored Care Living", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Notify Tailored Care Living",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Notify Tailored Care Living": {
-      "main": [[{"node": "Applicant Provided Email?", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Applicant Provided Email?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     },
     "Applicant Provided Email?": {
       "main": [
-        [{"node": "Send Applicant Receipt", "type": "main", "index": 0}],
-        [{"node": "Return Success", "type": "main", "index": 0}]
+        [
+          {
+            "node": "Send Applicant Receipt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Return Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
       ]
     },
     "Send Applicant Receipt": {
-      "main": [[{"node": "Return Success", "type": "main", "index": 0}]]
+      "main": [
+        [
+          {
+            "node": "Return Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
     }
   },
   "settings": {
