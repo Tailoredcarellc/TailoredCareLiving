@@ -303,8 +303,8 @@
     {
       "parameters": {
         "sendTo": "team@tailoredcarellc.com",
-        "subject": "=Policy & Procedure acknowledgment signed — {{ $json.signerName }}",
-        "message": "=A resident has electronically signed the Policy & Procedure acknowledgment.\n\nName on file: {{ $json.fullName }}\nTyped signature: {{ $json.signerName }}\nSigned at: {{ $json.signedAt }}\nIP address: {{ $json.signerIp }}\nDocument version: {{ $json.docVersion }}\n\nThis record is also saved in the Housing Interest List sheet.",
+        "subject": "=Policy & Procedure acknowledgment signed — {{ $('Build Signature Record').item.json.signerName }}",
+        "message": "=A resident has electronically signed the Policy & Procedure acknowledgment.\n\nName on file: {{ $('Build Signature Record').item.json.fullName }}\nTyped signature: {{ $('Build Signature Record').item.json.signerName }}\nSigned at: {{ $('Build Signature Record').item.json.signedAt }}\nIP address: {{ $('Build Signature Record').item.json.signerIp }}\nDocument version: {{ $('Build Signature Record').item.json.docVersion }}\n\nThis record is also saved in the Housing Interest List sheet.",
         "options": {}
       },
       "id": "b7-notify-business",
@@ -324,9 +324,9 @@
     },
     {
       "parameters": {
-        "sendTo": "={{ $json.email }}",
+        "sendTo": "={{ $('Build Signature Record').item.json.email }}",
         "subject": "Your Tailored Care Living acknowledgment is on file",
-        "message": "=Hello {{ $json.fullName }},\n\nThis confirms your electronic signature on the Tailored Care Living Policy & Procedure Manual ({{ $json.docVersion }}) was received on {{ $json.signedAt }}.\n\nSigned by: {{ $json.signerName }}\n\nPlease keep this email for your records. Tailored Care Living will follow up with any remaining move-in steps.\n\nTailored Care Living",
+        "message": "=Hello {{ $('Build Signature Record').item.json.fullName }},\n\nThis confirms your electronic signature on the Tailored Care Living Policy & Procedure Manual ({{ $('Build Signature Record').item.json.docVersion }}) was received on {{ $('Build Signature Record').item.json.signedAt }}.\n\nSigned by: {{ $('Build Signature Record').item.json.signerName }}\n\nPlease keep this email for your records. Tailored Care Living will follow up with any remaining move-in steps.\n\nTailored Care Living",
         "options": {}
       },
       "id": "b8-notify-resident",

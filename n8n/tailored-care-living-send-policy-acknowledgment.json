@@ -155,9 +155,9 @@
     },
     {
       "parameters": {
-        "sendTo": "={{ $json.Email }}",
+        "sendTo": "={{ $('Find Accepted, Unsent').item.json.Email }}",
         "subject": "Please sign your Tailored Care Living Policy & Procedure acknowledgment",
-        "message": "=Hello {{ $json['Full Name'] }},\n\nWelcome to Tailored Care Living. Before move-in, please review and sign the acknowledgment for the Policy & Procedure Manual using the private link below. This link is unique to you — please do not forward it.\n\nhttps://tailoredcarelivingllc.com/sign.html?token={{ $json.signToken }}\n\nIf you have any trouble opening the link, reply to this email and the team will assist you.\n\nTailored Care Living",
+        "message": "=Hello {{ $('Find Accepted, Unsent').item.json['Full Name'] }},\n\nWelcome to Tailored Care Living. Before move-in, please review and sign the acknowledgment for the Policy & Procedure Manual using the private link below. This link is unique to you — please do not forward it.\n\nhttps://tailoredcarelivingllc.com/sign.html?token={{ $('Find Accepted, Unsent').item.json.signToken }}\n\nIf you have any trouble opening the link, reply to this email and the team will assist you.\n\nTailored Care Living",
         "options": {}
       },
       "id": "05-send-link",
