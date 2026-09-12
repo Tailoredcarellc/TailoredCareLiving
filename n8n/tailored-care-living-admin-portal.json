@@ -60,7 +60,7 @@
     },
     {
       "parameters": {
-        "jsCode": "// Show only applicants who have not yet been marked Accepted or Declined.\nconst rows = $input.all();\nconst pending = rows.filter((item) => !String(item.json['Acceptance Status'] || '').trim());\n\nreturn pending.map((item) => ({\n  json: {\n    row_number: item.json.row_number,\n    reference: item.json['Reference'],\n    receivedAt: item.json['Received At'],\n    fullName: item.json['Full Name'],\n    phone: item.json['Phone'],\n    email: item.json['Email'],\n    bestContactTime: item.json['Best Contact Time'],\n    applyingFor: item.json['Applying For'],\n    occupants: item.json['Total Occupants'],\n    occupantAges: item.json['Occupant Ages'],\n    moveIn: item.json['Move-In Timeframe'],\n    currentHousing: item.json['Current Housing Situation'],\n    housingOnly: item.json['Housing Only'],\n    paymentSource: item.json['Payment Source'],\n    additional: item.json['Additional Information']\n  }\n}));"
+        "jsCode": "// Show only applicants who have not yet been marked Accepted or Declined.\n// Always return exactly one item (even when the list is empty) so the\n// Respond node below is guaranteed to run — n8n skips downstream nodes\n// entirely when a node's output is zero items.\nconst rows = $input.all();\nconst pending = rows.filter((item) => !String(item.json['Acceptance Status'] || '').trim());\n\nconst applicants = pending.map((item) => ({\n  row_number: item.json.row_number,\n  reference: item.json['Reference'],\n  receivedAt: item.json['Received At'],\n  fullName: item.json['Full Name'],\n  phone: item.json['Phone'],\n  email: item.json['Email'],\n  bestContactTime: item.json['Best Contact Time'],\n  applyingFor: item.json['Applying For'],\n  occupants: item.json['Total Occupants'],\n  occupantAges: item.json['Occupant Ages'],\n  moveIn: item.json['Move-In Timeframe'],\n  currentHousing: item.json['Current Housing Situation'],\n  housingOnly: item.json['Housing Only'],\n  paymentSource: item.json['Payment Source'],\n  additional: item.json['Additional Information']\n}));\n\nreturn [{ json: { ok: true, applicants } }];"
       },
       "id": "a3-filter-pending",
       "name": "Filter Pending",
@@ -74,7 +74,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ { ok: true, applicants: $input.all().map(i => i.json) } }}",
+        "responseBody": "={{ $json }}",
         "options": {
           "responseCode": 200
         }
