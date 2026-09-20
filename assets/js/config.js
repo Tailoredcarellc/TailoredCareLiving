@@ -5,6 +5,6 @@ window.TCL_CONFIG = Object.freeze({
   policySignSubmitEndpoint: 'https://deft-bison-84.nbg1-3.instapods.app/webhook/tailored-care-living-policy-sign-submit',
   adminPendingEndpoint: 'https://deft-bison-84.nbg1-3.instapods.app/webhook/tailored-care-living-admin-pending',
   adminDecideEndpoint: 'https://deft-bison-84.nbg1-3.instapods.app/webhook/tailored-care-living-admin-decide',
-  businessEmail: 'team@tailoredcarellc.com',
+  businessEmail: 'team@tailoredcarelivingllc.com',
   businessPhone: ''
 });

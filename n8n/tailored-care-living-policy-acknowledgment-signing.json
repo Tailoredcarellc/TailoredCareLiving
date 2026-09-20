@@ -302,7 +302,7 @@
     },
     {
       "parameters": {
-        "sendTo": "team@tailoredcarellc.com",
+        "sendTo": "team@tailoredcarelivingllc.com",
         "subject": "=Policy & Procedure acknowledgment signed — {{ $('Build Signature Record').item.json.signerName }}",
         "message": "=A resident has electronically signed the Policy & Procedure acknowledgment.\n\nName on file: {{ $('Build Signature Record').item.json.fullName }}\nTyped signature: {{ $('Build Signature Record').item.json.signerName }}\nSigned at: {{ $('Build Signature Record').item.json.signedAt }}\nIP address: {{ $('Build Signature Record').item.json.signerIp }}\nDocument version: {{ $('Build Signature Record').item.json.docVersion }}\n\nThis record is also saved in the Housing Interest List sheet.",
         "options": {}
