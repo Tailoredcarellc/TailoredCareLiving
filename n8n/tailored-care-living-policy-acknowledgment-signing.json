@@ -302,53 +302,53 @@
     },
     {
       "parameters": {
-        "sendTo": "team@tailoredcarelivingllc.com",
+        "fromEmail": "Tailored Care Living <team@tailoredcarelivingllc.com>",
+        "toEmail": "team@tailoredcarelivingllc.com",
         "subject": "=Policy & Procedure acknowledgment signed — {{ $('Build Signature Record').item.json.signerName }}",
-        "message": "=A resident has electronically signed the Policy & Procedure acknowledgment.\n\nName on file: {{ $('Build Signature Record').item.json.fullName }}\nTyped signature: {{ $('Build Signature Record').item.json.signerName }}\nSigned at: {{ $('Build Signature Record').item.json.signedAt }}\nIP address: {{ $('Build Signature Record').item.json.signerIp }}\nDocument version: {{ $('Build Signature Record').item.json.docVersion }}\n\nThis record is also saved in the Housing Interest List sheet.",
+        "emailFormat": "text",
+        "text": "=A resident has electronically signed the Policy & Procedure acknowledgment.\n\nName on file: {{ $('Build Signature Record').item.json.fullName }}\nTyped signature: {{ $('Build Signature Record').item.json.signerName }}\nSigned at: {{ $('Build Signature Record').item.json.signedAt }}\nIP address: {{ $('Build Signature Record').item.json.signerIp }}\nDocument version: {{ $('Build Signature Record').item.json.docVersion }}\n\nThis record is also saved in the Housing Interest List sheet.",
         "options": {
-          "appendAttribution": false,
-          "senderName": "Tailored Care Living"
-        },
-        "emailType": "text"
+          "appendAttribution": false
+        }
       },
       "id": "b7-notify-business",
       "name": "Notify Tailored Care Living",
-      "type": "n8n-nodes-base.gmail",
+      "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
         1440,
         100
       ],
       "credentials": {
-        "gmailOAuth2": {
-          "id": "eVuIH5uDzE9skC4F",
-          "name": "Gmail account"
+        "smtp": {
+          "id": "JU2Z7Qey5GYbu6Cr",
+          "name": "Tailored Care Living Business Email (Bizee)"
         }
       }
     },
     {
       "parameters": {
-        "sendTo": "={{ $('Build Signature Record').item.json.email }}",
+        "fromEmail": "Tailored Care Living <team@tailoredcarelivingllc.com>",
+        "toEmail": "={{ $('Build Signature Record').item.json.email }}",
         "subject": "Your Tailored Care Living acknowledgment is on file",
-        "message": "=Hello {{ $('Build Signature Record').item.json.fullName }},\n\nThis confirms your electronic signature on the Tailored Care Living Policy & Procedure Manual ({{ $('Build Signature Record').item.json.docVersion }}) was received on {{ $('Build Signature Record').item.json.signedAt }}.\n\nSigned by: {{ $('Build Signature Record').item.json.signerName }}\n\nPlease keep this email for your records. Tailored Care Living will follow up with any remaining move-in steps.\n\nTailored Care Living",
+        "emailFormat": "text",
+        "text": "=Hello {{ $('Build Signature Record').item.json.fullName }},\n\nThis confirms your electronic signature on the Tailored Care Living Policy & Procedure Manual ({{ $('Build Signature Record').item.json.docVersion }}) was received on {{ $('Build Signature Record').item.json.signedAt }}.\n\nSigned by: {{ $('Build Signature Record').item.json.signerName }}\n\nPlease keep this email for your records. Tailored Care Living will follow up with any remaining move-in steps.\n\nTailored Care Living",
         "options": {
-          "appendAttribution": false,
-          "senderName": "Tailored Care Living"
-        },
-        "emailType": "text"
+          "appendAttribution": false
+        }
       },
       "id": "b8-notify-resident",
       "name": "Send Resident Receipt",
-      "type": "n8n-nodes-base.gmail",
+      "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
         1440,
         300
       ],
       "credentials": {
-        "gmailOAuth2": {
-          "id": "eVuIH5uDzE9skC4F",
-          "name": "Gmail account"
+        "smtp": {
+          "id": "JU2Z7Qey5GYbu6Cr",
+          "name": "Tailored Care Living Business Email (Bizee)"
         }
       }
     },

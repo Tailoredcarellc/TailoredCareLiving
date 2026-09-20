@@ -249,27 +249,27 @@
     },
     {
       "parameters": {
-        "sendTo": "team@tailoredcarelivingllc.com",
+        "fromEmail": "Tailored Care Living <team@tailoredcarelivingllc.com>",
+        "toEmail": "team@tailoredcarelivingllc.com",
         "subject": "=New housing interest-list submission — {{ $('Validate and Normalize').item.json.reference }}",
-        "message": "=A new housing interest-list submission was received through the Tailored Care Living website.\n\nStatus: {{ $('Validate and Normalize').item.json.waitingListStatus }}\nReference: {{ $('Validate and Normalize').item.json.reference }}\nReceived: {{ $('Validate and Normalize').item.json.receivedAt }}\n\nCONTACT\nName: {{ $('Validate and Normalize').item.json.fullName }}\nPhone: {{ $('Validate and Normalize').item.json.phone }}\nEmail: {{ $('Validate and Normalize').item.json.email || 'Not provided' }}\nBest time to call: {{ $('Validate and Normalize').item.json.bestContactTime }}\n\nHOUSEHOLD AND HOUSING NEED\nSeeking housing for: {{ $('Validate and Normalize').item.json.applyingFor }}\nTotal proposed occupants: {{ $('Validate and Normalize').item.json.occupants }}\nAges of proposed occupants: {{ $('Validate and Normalize').item.json.occupantAges }}\nMove-in timeframe: {{ $('Validate and Normalize').item.json.moveIn }}\nCurrent housing situation: {{ $('Validate and Normalize').item.json.currentHousing }}\n\nHOUSING SERVICES\nSeeking housing-only accommodations: {{ $('Validate and Normalize').item.json.housingOnly }}\nExpected payment source: {{ $('Validate and Normalize').item.json.paymentSource }}\n\nADDITIONAL INFORMATION\n{{ $('Validate and Normalize').item.json.additional || 'Not provided' }}\n\nThis submission requires individual human review. Do not approve or reject an applicant based only on an occupant's age or familial status.",
+        "emailFormat": "text",
+        "text": "=A new housing interest-list submission was received through the Tailored Care Living website.\n\nStatus: {{ $('Validate and Normalize').item.json.waitingListStatus }}\nReference: {{ $('Validate and Normalize').item.json.reference }}\nReceived: {{ $('Validate and Normalize').item.json.receivedAt }}\n\nCONTACT\nName: {{ $('Validate and Normalize').item.json.fullName }}\nPhone: {{ $('Validate and Normalize').item.json.phone }}\nEmail: {{ $('Validate and Normalize').item.json.email || 'Not provided' }}\nBest time to call: {{ $('Validate and Normalize').item.json.bestContactTime }}\n\nHOUSEHOLD AND HOUSING NEED\nSeeking housing for: {{ $('Validate and Normalize').item.json.applyingFor }}\nTotal proposed occupants: {{ $('Validate and Normalize').item.json.occupants }}\nAges of proposed occupants: {{ $('Validate and Normalize').item.json.occupantAges }}\nMove-in timeframe: {{ $('Validate and Normalize').item.json.moveIn }}\nCurrent housing situation: {{ $('Validate and Normalize').item.json.currentHousing }}\n\nHOUSING SERVICES\nSeeking housing-only accommodations: {{ $('Validate and Normalize').item.json.housingOnly }}\nExpected payment source: {{ $('Validate and Normalize').item.json.paymentSource }}\n\nADDITIONAL INFORMATION\n{{ $('Validate and Normalize').item.json.additional || 'Not provided' }}\n\nThis submission requires individual human review. Do not approve or reject an applicant based only on an occupant's age or familial status.",
         "options": {
-          "appendAttribution": false,
-          "senderName": "Tailored Care Living"
-        },
-        "emailType": "text"
+          "appendAttribution": false
+        }
       },
       "id": "03-owner-email",
       "name": "Notify Tailored Care Living",
-      "type": "n8n-nodes-base.gmail",
+      "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
         720,
         0
       ],
       "credentials": {
-        "gmailOAuth2": {
-          "id": "eVuIH5uDzE9skC4F",
-          "name": "Gmail account"
+        "smtp": {
+          "id": "JU2Z7Qey5GYbu6Cr",
+          "name": "Tailored Care Living Business Email (Bizee)"
         }
       }
     },
@@ -309,27 +309,27 @@
     },
     {
       "parameters": {
-        "sendTo": "={{ $('Validate and Normalize').item.json.email }}",
+        "fromEmail": "Tailored Care Living <team@tailoredcarelivingllc.com>",
+        "toEmail": "={{ $('Validate and Normalize').item.json.email }}",
         "subject": "=Tailored Care Living interest list — {{ $('Validate and Normalize').item.json.reference }}",
-        "message": "=Hello {{ $('Validate and Normalize').item.json.fullName }},\n\nThank you for contacting Tailored Care Living. Your information has been added to the housing interest list.\n\nReference number: {{ $('Validate and Normalize').item.json.reference }}\n\nThe home is expected to be ready in the coming months. A member of the team will review your information and may contact you as opening plans and availability develop. Joining the list does not guarantee acceptance, placement, timing, or housing availability.\n\nPlease do not reply with Social Security, banking, medical, or benefit account numbers.\n\nTailored Care Living",
+        "emailFormat": "text",
+        "text": "=Hello {{ $('Validate and Normalize').item.json.fullName }},\n\nThank you for contacting Tailored Care Living. Your information has been added to the housing interest list.\n\nReference number: {{ $('Validate and Normalize').item.json.reference }}\n\nThe home is expected to be ready in the coming months. A member of the team will review your information and may contact you as opening plans and availability develop. Joining the list does not guarantee acceptance, placement, timing, or housing availability.\n\nPlease do not reply with Social Security, banking, medical, or benefit account numbers.\n\nTailored Care Living",
         "options": {
-          "appendAttribution": false,
-          "senderName": "Tailored Care Living"
-        },
-        "emailType": "text"
+          "appendAttribution": false
+        }
       },
       "id": "05-applicant-email",
       "name": "Send Applicant Receipt",
-      "type": "n8n-nodes-base.gmail",
+      "type": "n8n-nodes-base.emailSend",
       "typeVersion": 2.1,
       "position": [
         1200,
         -100
       ],
       "credentials": {
-        "gmailOAuth2": {
-          "id": "eVuIH5uDzE9skC4F",
-          "name": "Gmail account"
+        "smtp": {
+          "id": "JU2Z7Qey5GYbu6Cr",
+          "name": "Tailored Care Living Business Email (Bizee)"
         }
       }
     },
