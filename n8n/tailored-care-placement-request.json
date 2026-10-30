@@ -1,0 +1,773 @@
+{
+  "name": "Tailored Care Placement Agency — Placement Requests",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "tailored-care-placement-request",
+        "responseMode": "responseNode",
+        "options": {
+          "allowedOrigins": "https://tailoredcarelivingllc.com,https://www.tailoredcarelivingllc.com,https://tailoredcarellc.github.io"
+        }
+      },
+      "id": "01-webhook",
+      "name": "Placement Request Submitted",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "tailored-care-placement-request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $json.body || {};\nconst clean = (value, limit = 1500) => String(value ?? '').trim().slice(0, limit);\n\nif (clean(body.website)) throw new Error('Submission rejected.');\nconst startedAt = Number(body.startedAt || 0);\nif (!startedAt || Date.now() - startedAt < 3000) throw new Error('Submission was too fast.');\n\nconst data = {\n  requesterRole: clean(body.requesterRole, 60),\n  requesterName: clean(body.requesterName, 120),\n  organization: clean(body.organization, 160),\n  requesterPhone: clean(body.requesterPhone, 30),\n  requesterEmail: clean(body.requesterEmail, 160),\n  bestTime: clean(body.bestTime, 40),\n  clientFirstName: clean(body.clientFirstName, 80),\n  clientLastName: clean(body.clientLastName, 80),\n  clientDob: clean(body.clientDob, 20),\n  clientPhone: clean(body.clientPhone, 30),\n  clientGender: clean(body.clientGender, 40),\n  preferredLanguage: clean(body.preferredLanguage, 60),\n  veteran: clean(body.veteran, 20),\n  currentLocation: clean(body.currentLocation, 200),\n  dischargeDate: clean(body.dischargeDate, 20),\n  decisionMaker: clean(body.decisionMaker, 60),\n  decisionMakerContact: clean(body.decisionMakerContact, 200),\n  settingTypes: clean(body.settingTypes, 400),\n  situations: clean(body.situations, 400),\n  moveIn: clean(body.moveIn, 40),\n  preferredArea: clean(body.preferredArea, 200),\n  areasToAvoid: clean(body.areasToAvoid, 200),\n  incomeSources: clean(body.incomeSources, 300),\n  monthlyIncome: clean(body.monthlyIncome, 40),\n  housingBudget: clean(body.housingBudget, 40),\n  hasPhotoId: clean(body.hasPhotoId, 20),\n  walksUnaided: clean(body.walksUnaided, 10),\n  mobilityAid: clean(body.mobilityAid, 10),\n  climbsStairs: clean(body.climbsStairs, 10),\n  managesMeds: clean(body.managesMeds, 10),\n  personalCare: clean(body.personalCare, 10),\n  mealHelp: clean(body.mealHelp, 10),\n  smokes: clean(body.smokes, 10),\n  pet: clean(body.pet, 10),\n  accommodations: clean(body.accommodations, 1500),\n  probation: clean(body.probation, 10),\n  residenceRestrictions: clean(body.residenceRestrictions, 10),\n  recoveryProgram: clean(body.recoveryProgram, 10),\n  activeCaseManager: clean(body.activeCaseManager, 10),\n  agentContact: clean(body.agentContact, 200),\n  additionalInfo: clean(body.additionalInfo, 1500),\n  signature: clean(body.signature, 120),\n  relationship: clean(body.relationship, 80),\n  consent: clean(body.consent, 10)\n};\ndata.requesterEmail = data.requesterEmail.toLowerCase();\n\nconst required = [\"requesterRole\", \"requesterName\", \"requesterPhone\", \"clientFirstName\", \"clientLastName\", \"moveIn\", \"signature\", \"consent\"];\nif (required.some((field) => !data[field])) throw new Error('Please complete all required fields.');\nif (data.requesterEmail && !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(data.requesterEmail)) throw new Error('Please enter a valid email address.');\n\nconst date = new Date().toISOString().slice(0, 10).replaceAll('-', '');\nconst suffix = Math.floor(1000 + Math.random() * 9000);\nreturn [{ json: { ...data, status: 'New placement request — call to follow up', reference: `PL-${date}-${suffix}`, receivedAt: new Date().toISOString() } }];"
+      },
+      "id": "02-validate",
+      "name": "Validate and Normalize",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        240,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "103fgQTP6_Edr-Mr2xlJGeremtl9Q82QinH4yx1moAzE",
+          "mode": "id"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Placement Requests",
+          "mode": "name"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Received At": "={{ $json.receivedAt }}",
+            "Reference": "={{ $json.reference }}",
+            "Status": "={{ $json.status }}",
+            "Requester Role": "={{ $json.requesterRole }}",
+            "Requester Name": "={{ $json.requesterName }}",
+            "Organization": "={{ $json.organization }}",
+            "Requester Phone": "={{ $json.requesterPhone }}",
+            "Requester Email": "={{ $json.requesterEmail }}",
+            "Best Time to Reach": "={{ $json.bestTime }}",
+            "Client First Name": "={{ $json.clientFirstName }}",
+            "Client Last Name": "={{ $json.clientLastName }}",
+            "Date of Birth": "={{ $json.clientDob }}",
+            "Client Phone": "={{ $json.clientPhone }}",
+            "Gender": "={{ $json.clientGender }}",
+            "Preferred Language": "={{ $json.preferredLanguage }}",
+            "Veteran": "={{ $json.veteran }}",
+            "Current Location": "={{ $json.currentLocation }}",
+            "Expected Discharge / Release": "={{ $json.dischargeDate }}",
+            "Legal Decision-Maker": "={{ $json.decisionMaker }}",
+            "Decision-Maker Contact": "={{ $json.decisionMakerContact }}",
+            "Setting Requested": "={{ $json.settingTypes }}",
+            "Situation": "={{ $json.situations }}",
+            "Move-In Timeframe": "={{ $json.moveIn }}",
+            "Preferred Area": "={{ $json.preferredArea }}",
+            "Areas to Avoid": "={{ $json.areasToAvoid }}",
+            "Income Sources": "={{ $json.incomeSources }}",
+            "Monthly Income": "={{ $json.monthlyIncome }}",
+            "Housing Budget": "={{ $json.housingBudget }}",
+            "Has Photo ID": "={{ $json.hasPhotoId }}",
+            "Walks Without Help": "={{ $json.walksUnaided }}",
+            "Uses Walker/Cane/Wheelchair": "={{ $json.mobilityAid }}",
+            "Can Climb Stairs": "={{ $json.climbsStairs }}",
+            "Manages Own Medications": "={{ $json.managesMeds }}",
+            "Handles Own Personal Care": "={{ $json.personalCare }}",
+            "Needs Help With Meals": "={{ $json.mealHelp }}",
+            "Smokes or Vapes": "={{ $json.smokes }}",
+            "Pet or Service Animal": "={{ $json.pet }}",
+            "Accommodations": "={{ $json.accommodations }}",
+            "On Probation/Parole": "={{ $json.probation }}",
+            "Residence Restrictions": "={{ $json.residenceRestrictions }}",
+            "In Recovery Program": "={{ $json.recoveryProgram }}",
+            "Has Active Case Manager": "={{ $json.activeCaseManager }}",
+            "Agent / Case Manager Contact": "={{ $json.agentContact }}",
+            "Additional Information": "={{ $json.additionalInfo }}",
+            "Signature": "={{ $json.signature }}",
+            "Relationship to Person": "={{ $json.relationship }}",
+            "Consent": "={{ $json.consent }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Received At",
+              "displayName": "Received At",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Reference",
+              "displayName": "Reference",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Status",
+              "displayName": "Status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Requester Role",
+              "displayName": "Requester Role",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Requester Name",
+              "displayName": "Requester Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Organization",
+              "displayName": "Organization",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Requester Phone",
+              "displayName": "Requester Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Requester Email",
+              "displayName": "Requester Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Best Time to Reach",
+              "displayName": "Best Time to Reach",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Client First Name",
+              "displayName": "Client First Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Client Last Name",
+              "displayName": "Client Last Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Date of Birth",
+              "displayName": "Date of Birth",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Client Phone",
+              "displayName": "Client Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Gender",
+              "displayName": "Gender",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Preferred Language",
+              "displayName": "Preferred Language",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Veteran",
+              "displayName": "Veteran",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Current Location",
+              "displayName": "Current Location",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Expected Discharge / Release",
+              "displayName": "Expected Discharge / Release",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Legal Decision-Maker",
+              "displayName": "Legal Decision-Maker",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Decision-Maker Contact",
+              "displayName": "Decision-Maker Contact",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Setting Requested",
+              "displayName": "Setting Requested",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Situation",
+              "displayName": "Situation",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Move-In Timeframe",
+              "displayName": "Move-In Timeframe",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Preferred Area",
+              "displayName": "Preferred Area",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Areas to Avoid",
+              "displayName": "Areas to Avoid",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Income Sources",
+              "displayName": "Income Sources",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Monthly Income",
+              "displayName": "Monthly Income",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Housing Budget",
+              "displayName": "Housing Budget",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Has Photo ID",
+              "displayName": "Has Photo ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Walks Without Help",
+              "displayName": "Walks Without Help",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Uses Walker/Cane/Wheelchair",
+              "displayName": "Uses Walker/Cane/Wheelchair",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Can Climb Stairs",
+              "displayName": "Can Climb Stairs",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Manages Own Medications",
+              "displayName": "Manages Own Medications",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Handles Own Personal Care",
+              "displayName": "Handles Own Personal Care",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Needs Help With Meals",
+              "displayName": "Needs Help With Meals",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Smokes or Vapes",
+              "displayName": "Smokes or Vapes",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Pet or Service Animal",
+              "displayName": "Pet or Service Animal",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Accommodations",
+              "displayName": "Accommodations",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "On Probation/Parole",
+              "displayName": "On Probation/Parole",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Residence Restrictions",
+              "displayName": "Residence Restrictions",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "In Recovery Program",
+              "displayName": "In Recovery Program",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Has Active Case Manager",
+              "displayName": "Has Active Case Manager",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Agent / Case Manager Contact",
+              "displayName": "Agent / Case Manager Contact",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Additional Information",
+              "displayName": "Additional Information",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Signature",
+              "displayName": "Signature",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Relationship to Person",
+              "displayName": "Relationship to Person",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Consent",
+              "displayName": "Consent",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "03-placement-sheet",
+      "name": "Add to Placement Requests",
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        480,
+        0
+      ],
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "Tz0DKwpIOZNXzLcC",
+          "name": "Tailored Care Google Everything OAuth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "fromEmail": "Tailored Care Placement Agency <team@tailoredcarelivingllc.com>",
+        "toEmail": "team@tailoredcarelivingllc.com",
+        "subject": "=[PLACEMENT] New request — {{ $('Validate and Normalize').item.json.clientFirstName }} {{ $('Validate and Normalize').item.json.clientLastName }} · {{ $('Validate and Normalize').item.json.moveIn }} · {{ $('Validate and Normalize').item.json.reference }}",
+        "emailFormat": "text",
+        "text": "=A new placement request was received through the Tailored Care Placement Agency form.\n\nReference: {{ $('Validate and Normalize').item.json.reference }}\nReceived: {{ $('Validate and Normalize').item.json.receivedAt }}\n\nABOUT THE PERSON MAKING THIS REQUEST\nI am: {{ $('Validate and Normalize').item.json.requesterRole || 'Not provided' }}\nName: {{ $('Validate and Normalize').item.json.requesterName || 'Not provided' }}\nOrganization: {{ $('Validate and Normalize').item.json.organization || 'Not provided' }}\nPhone: {{ $('Validate and Normalize').item.json.requesterPhone || 'Not provided' }}\nEmail: {{ $('Validate and Normalize').item.json.requesterEmail || 'Not provided' }}\nBest time to reach: {{ $('Validate and Normalize').item.json.bestTime || 'Not provided' }}\n\nPERSON NEEDING PLACEMENT\nFirst name: {{ $('Validate and Normalize').item.json.clientFirstName || 'Not provided' }}\nLast name: {{ $('Validate and Normalize').item.json.clientLastName || 'Not provided' }}\nDate of birth: {{ $('Validate and Normalize').item.json.clientDob || 'Not provided' }}\nPhone: {{ $('Validate and Normalize').item.json.clientPhone || 'Not provided' }}\nGender: {{ $('Validate and Normalize').item.json.clientGender || 'Not provided' }}\nPreferred language: {{ $('Validate and Normalize').item.json.preferredLanguage || 'Not provided' }}\nVeteran: {{ $('Validate and Normalize').item.json.veteran || 'Not provided' }}\nCurrent location: {{ $('Validate and Normalize').item.json.currentLocation || 'Not provided' }}\nExpected discharge / release: {{ $('Validate and Normalize').item.json.dischargeDate || 'Not provided' }}\nLegal decision-maker: {{ $('Validate and Normalize').item.json.decisionMaker || 'Not provided' }}\nGuardian / POA / payee contact: {{ $('Validate and Normalize').item.json.decisionMakerContact || 'Not provided' }}\n\nPLACEMENT NEEDS\nSetting requested: {{ $('Validate and Normalize').item.json.settingTypes || 'Not provided' }}\nSituation: {{ $('Validate and Normalize').item.json.situations || 'Not provided' }}\nMove-in timeframe: {{ $('Validate and Normalize').item.json.moveIn || 'Not provided' }}\nPreferred area: {{ $('Validate and Normalize').item.json.preferredArea || 'Not provided' }}\nAreas to avoid: {{ $('Validate and Normalize').item.json.areasToAvoid || 'Not provided' }}\n\nINCOME & BUDGET\nIncome sources: {{ $('Validate and Normalize').item.json.incomeSources || 'Not provided' }}\nApproximate monthly income: {{ $('Validate and Normalize').item.json.monthlyIncome || 'Not provided' }}\nMonthly housing budget: {{ $('Validate and Normalize').item.json.housingBudget || 'Not provided' }}\nHas current photo ID: {{ $('Validate and Normalize').item.json.hasPhotoId || 'Not provided' }}\n\nGENERAL DAILY LIVING\nWalks without help: {{ $('Validate and Normalize').item.json.walksUnaided || 'Not provided' }}\nUses walker, cane, or wheelchair: {{ $('Validate and Normalize').item.json.mobilityAid || 'Not provided' }}\nCan climb stairs: {{ $('Validate and Normalize').item.json.climbsStairs || 'Not provided' }}\nManages own medications: {{ $('Validate and Normalize').item.json.managesMeds || 'Not provided' }}\nHandles own personal care: {{ $('Validate and Normalize').item.json.personalCare || 'Not provided' }}\nNeeds help with meals: {{ $('Validate and Normalize').item.json.mealHelp || 'Not provided' }}\nSmokes or vapes: {{ $('Validate and Normalize').item.json.smokes || 'Not provided' }}\nHas pet or service animal: {{ $('Validate and Normalize').item.json.pet || 'Not provided' }}\nAccommodations / right fit: {{ $('Validate and Normalize').item.json.accommodations || 'Not provided' }}\n\nBACKGROUND & SPECIAL CONSIDERATIONS\nOn probation / parole: {{ $('Validate and Normalize').item.json.probation || 'Not provided' }}\nResidence restrictions: {{ $('Validate and Normalize').item.json.residenceRestrictions || 'Not provided' }}\nIn recovery program: {{ $('Validate and Normalize').item.json.recoveryProgram || 'Not provided' }}\nHas active case manager: {{ $('Validate and Normalize').item.json.activeCaseManager || 'Not provided' }}\nAgent / case manager contact: {{ $('Validate and Normalize').item.json.agentContact || 'Not provided' }}\nAdditional information: {{ $('Validate and Normalize').item.json.additionalInfo || 'Not provided' }}\n\nCONSENT & SIGNATURE\nSigned (typed name): {{ $('Validate and Normalize').item.json.signature || 'Not provided' }}\nRelationship to person: {{ $('Validate and Normalize').item.json.relationship || 'Not provided' }}\nConsent box checked: Yes\n\nThis request is also saved in the \"Placement Requests\" tab of the Google Sheet. It contains private personal information; please do not forward it outside the team.",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "04-owner-email",
+      "name": "Notify Placement Team",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        720,
+        0
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "JU2Z7Qey5GYbu6Cr",
+          "name": "Tailored Care Living Business Email (Bizee)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "has-email",
+              "leftValue": "={{ $('Validate and Normalize').item.json.requesterEmail }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "05-has-email",
+      "name": "Requester Provided Email?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        960,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "Tailored Care Placement Agency <team@tailoredcarelivingllc.com>",
+        "toEmail": "={{ $('Validate and Normalize').item.json.requesterEmail }}",
+        "subject": "=Your placement request was received — {{ $('Validate and Normalize').item.json.reference }}",
+        "emailFormat": "text",
+        "text": "=Hello {{ $('Validate and Normalize').item.json.requesterName }},\n\nThank you for contacting Tailored Care Placement Agency. We received your placement request.\n\nReference number: {{ $('Validate and Normalize').item.json.reference }}\n\nA member of our team will call to discuss options privately. Placement is not guaranteed, and a signed consent will be completed before any move.\n\nQuestions or an urgent placement? Call 1-888-599-2504. If this is an emergency, call 911.\n\nPlease do not reply with Social Security, banking, medical, or benefit account numbers.\n\nTailored Care Placement Agency",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "id": "06-requester-email",
+      "name": "Send Requester Receipt",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1200,
+        -100
+      ],
+      "credentials": {
+        "smtp": {
+          "id": "JU2Z7Qey5GYbu6Cr",
+          "name": "Tailored Care Living Business Email (Bizee)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ { ok: true, reference: $('Validate and Normalize').item.json.reference } }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "07-response",
+      "name": "Return Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.4,
+      "position": [
+        1440,
+        0
+      ]
+    }
+  ],
+  "connections": {
+    "Placement Request Submitted": {
+      "main": [
+        [
+          {
+            "node": "Validate and Normalize",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validate and Normalize": {
+      "main": [
+        [
+          {
+            "node": "Add to Placement Requests",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Add to Placement Requests": {
+      "main": [
+        [
+          {
+            "node": "Notify Placement Team",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Notify Placement Team": {
+      "main": [
+        [
+          {
+            "node": "Requester Provided Email?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Requester Provided Email?": {
+      "main": [
+        [
+          {
+            "node": "Send Requester Receipt",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Return Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Requester Receipt": {
+      "main": [
+        [
+          {
+            "node": "Return Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}
