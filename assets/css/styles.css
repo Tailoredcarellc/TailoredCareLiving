@@ -386,3 +386,5 @@
 .partner-banner h2 em{color:var(--gold-light);font-style:italic}
 .partner-banner p:not(.eyebrow){margin:0;max-width:44rem;color:rgba(255,255,255,.82);font-size:.95rem}
 @media(max-width:820px){.partner-banner-inner{grid-template-columns:1fr;gap:1.6rem}}
+.nav-links>a{white-space:nowrap}
+@media(min-width:821px) and (max-width:1100px){.nav-links{gap:.95rem}.nav-links>a:not(.button){font-size:.72rem}}
