@@ -17,3 +17,8 @@
 .sign-grid{margin-top:2rem}
 @media(max-width:820px){.choices-4{grid-template-columns:1fr 1fr}}
 @media(max-width:520px){.choices-4{grid-template-columns:1fr}.yn-row{grid-template-columns:1fr;gap:.5rem}.yn-options{display:grid;grid-template-columns:repeat(3,1fr)}.yn-option label{min-width:0}.progress-list{grid-template-columns:repeat(6,1fr)}}
+.placement-about{max-width:420px;margin:1.8rem 0 2rem;padding-top:1.4rem;border-top:1px solid rgba(231,189,117,.3);color:#bcb4ac;font-size:.92rem}
+.placement-about p{margin:0 0 1rem}
+.placement-about .placement-about-label{margin:0 0 .6rem;color:#e7bd75;font-size:.72rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+.placement-steps{margin:0;padding-left:1.2rem;font-size:.92rem;line-height:1.55}
+.placement-steps li{margin-bottom:.5rem}
